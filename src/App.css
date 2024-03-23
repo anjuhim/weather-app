@@ -1,0 +1,21 @@
+body {
+  background: url(https://th.bing.com/th/id/OIP.8wpAkn29xH7zXvXb1H-l1wHaFS?w=239&h=180&c=7&r=0&o=5&pid=1.7);
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+}
+
+.weather-box {
+  border: 3px solid white;
+  padding: 50px;
+  border-radius: 30px;
+  background-color: beige;
+}
