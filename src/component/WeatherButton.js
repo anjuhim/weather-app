@@ -1,10 +1,16 @@
 import React from 'react';
-import { ButtonGroup, ToggleButton } from 'react-bootstrap';
+import { Button, ButtonGroup, ToggleButton } from 'react-bootstrap';
 
 const WeatherButton = ({ cities, setCity, city }) => {
   return (
     <div className="buttonWrap">
       <ButtonGroup vertical="true">
+        <Button
+          variant={city === '' ? 'danger' : 'outline-primary'}
+          onClick={() => setCity('')}
+        >
+          ○ 현위치
+        </Button>
         {cities.map((item, index) => {
           return (
             <ToggleButton

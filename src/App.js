@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import WeatherBox from './component/WeatherBox';
 import WeatherButton from './component/WeatherButton';
 import ClipLoader from 'react-spinners/ClipLoader';
-import { Button } from 'react-bootstrap';
 
 // 1. 앱이 시작 되자마자 현재위치 기반의 날씨가 보인다/
 // 2. 날씨정보에는 도시, 섭씨, 화씨 날씨상태
@@ -83,9 +82,6 @@ function App() {
         />
       ) : !apiError ? (
         <>
-          <Button variant="link" onClick={() => setCity('')}>
-            ○ 현위치
-          </Button>
           <div className="both">
             <div className="left">
               <WeatherBox weather={weather} />
