@@ -47,7 +47,9 @@ function App() {
   };
 
   const getCurrentLocation = () => {
+    setLoding(true);
     navigator.geolocation.getCurrentPosition((position) => {
+      setLoding(false);
       let lat = position.coords.latitude;
       let lon = position.coords.longitude;
       getWeatherByCurrentLocation(lat, lon);
