@@ -3,8 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
 import WeatherBox from './component/WeatherBox';
 import WeatherButton from './component/WeatherButton';
-import { Button } from 'react-bootstrap';
 import ClipLoader from 'react-spinners/ClipLoader';
+import { Button } from 'react-bootstrap';
 
 // 1. 앱이 시작 되자마자 현재위치 기반의 날씨가 보인다/
 // 2. 날씨정보에는 도시, 섭씨, 화씨 날씨상태
@@ -16,6 +16,7 @@ function App() {
   const [weather, setWeather] = useState(null);
   const [city, setCity] = useState('');
   const [loading, setLoding] = useState(false);
+  const [apiError, setAPIError] = useState('');
   const cities = [
     'seoul',
     'incheon',
@@ -39,17 +40,21 @@ function App() {
   };
 
   const callWeather = async (url) => {
-    setLoding(true);
-    let response = await fetch(url);
-    let data = await response.json();
-    setWeather(data);
-    setLoding(false);
+    try {
+      let response = await fetch(url);
+      let data = await response.json();
+      setWeather(data);
+      setLoding(false);
+    } catch (e) {
+      console.log('ERROR:', e);
+      setAPIError(e.message);
+      setLoding(false);
+    }
   };
 
   const getCurrentLocation = () => {
     setLoding(true);
     navigator.geolocation.getCurrentPosition((position) => {
-      setLoding(false);
       let lat = position.coords.latitude;
       let lon = position.coords.longitude;
       getWeatherByCurrentLocation(lat, lon);
@@ -57,6 +62,7 @@ function App() {
   };
 
   useEffect(() => {
+    setLoding(true);
     if (city === '') {
       getCurrentLocation();
     } else {
@@ -66,32 +72,32 @@ function App() {
   }, [city]);
 
   return (
-    <div>
-      <div className="container">
-        {loading ? (
-          <ClipLoader
-            color={'purple'}
-            loading={loading}
-            size={150}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
-        ) : (
-          <>
-            <Button variant="link" onClick={() => setCity('')}>
-              현위치
-            </Button>
-            <div className="both">
-              <div className="left">
-                <WeatherBox weather={weather} />
-              </div>
-              <div className="right">
-                <WeatherButton cities={cities} setCity={setCity} city={city} />
-              </div>
+    <div className="container">
+      {loading ? (
+        <ClipLoader
+          color={'purple'}
+          loading={loading}
+          size={150}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+      ) : !apiError ? (
+        <>
+          <Button variant="link" onClick={() => setCity('')}>
+            ○ 현위치
+          </Button>
+          <div className="both">
+            <div className="left">
+              <WeatherBox weather={weather} />
             </div>
-          </>
-        )}
-      </div>
+            <div className="right">
+              <WeatherButton cities={cities} setCity={setCity} city={city} />
+            </div>
+          </div>
+        </>
+      ) : (
+        apiError
+      )}
     </div>
   );
 }
