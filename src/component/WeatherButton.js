@@ -1,13 +1,27 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
+import { ButtonGroup, ToggleButton } from 'react-bootstrap';
 
-const WeatherButton = () => {
+const WeatherButton = ({ cities, setCity, city }) => {
   return (
-    <div>
-      <Button variant="outline-primary">Current Location</Button>{' '}
-      <Button variant="outline-primary">Paris</Button>{' '}
-      <Button variant="outline-primary">Seoul</Button>{' '}
-      <Button variant="outline-primary">NewYork</Button>{' '}
+    <div className="buttonWrap">
+      <ButtonGroup vertical="true">
+        {cities.map((item, index) => {
+          return (
+            <ToggleButton
+              type="radio"
+              key={index}
+              id={`city-${index}`}
+              name="city"
+              value={item}
+              checked={city === item}
+              variant={city === item ? 'danger' : 'outline-primary'}
+              onChange={(e) => setCity(e.currentTarget.value)}
+            >
+              {item}
+            </ToggleButton>
+          );
+        })}
+      </ButtonGroup>
     </div>
   );
 };

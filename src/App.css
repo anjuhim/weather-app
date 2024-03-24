@@ -14,8 +14,27 @@ body {
 }
 
 .weather-box {
+  width: 100%;
   border: 3px solid white;
   padding: 50px;
   border-radius: 30px;
-  background-color: beige;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.both {
+  display: flex;
+}
+.left {
+  left: 0;
+  width: 500px;
+}
+.right {
+  right: 0;
+}
+.buttonWrap {
+  display: inline-grid;
+  margin: 0px 15px;
+}
+.mgb5 {
+  margin-bottom: 5px;
 }

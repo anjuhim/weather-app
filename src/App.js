@@ -3,6 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
 import WeatherBox from './component/WeatherBox';
 import WeatherButton from './component/WeatherButton';
+import { Button } from 'react-bootstrap';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 // 1. 앱이 시작 되자마자 현재위치 기반의 날씨가 보인다/
 // 2. 날씨정보에는 도시, 섭씨, 화씨 날씨상태
@@ -12,30 +14,81 @@ import WeatherButton from './component/WeatherButton';
 // 6. 데이터를 들고오는 동안 로딩 스피너가 돈다
 function App() {
   const [weather, setWeather] = useState(null);
+  const [city, setCity] = useState('');
+  const [loading, setLoding] = useState(false);
+  const cities = [
+    'seoul',
+    'incheon',
+    'daejeon',
+    'gwangju',
+    'daegu',
+    'ulsan',
+    'busan',
+    'jeju',
+  ];
+  const weatherApiUrl = `https://api.openweathermap.org/data/2.5/weather?lang=kr&units=metric&appid=${process.env.REACT_APP_OPEN_WEATHER_MAP}`;
 
-  const getWeatherByCurrentLocation = async (lat, lon) => {
-    let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=e7690792e3deeb0ceda1f1291a8acc46&units=metric`;
+  const getWeatherByCurrentLocation = (lat, lon) => {
+    let url = `${weatherApiUrl}&lat=${lat}&lon=${lon}`;
+    callWeather(url);
+  };
+
+  const getWeatherByCity = () => {
+    let url = `${weatherApiUrl}&q=${city}`;
+    callWeather(url);
+  };
+
+  const callWeather = async (url) => {
+    setLoding(true);
     let response = await fetch(url);
     let data = await response.json();
     setWeather(data);
+    setLoding(false);
+  };
+
+  const getCurrentLocation = () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      let lat = position.coords.latitude;
+      let lon = position.coords.longitude;
+      getWeatherByCurrentLocation(lat, lon);
+    });
   };
 
   useEffect(() => {
-    const getCurrentLocation = () => {
-      navigator.geolocation.getCurrentPosition((position) => {
-        let lat = position.coords.latitude;
-        let lon = position.coords.longitude;
-        getWeatherByCurrentLocation(lat, lon);
-      });
-    };
-    getCurrentLocation();
-  }, [weather]);
+    if (city === '') {
+      getCurrentLocation();
+    } else {
+      getWeatherByCity();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [city]);
 
   return (
     <div>
       <div className="container">
-        <WeatherBox weather={weather} />
-        <WeatherButton />
+        {loading ? (
+          <ClipLoader
+            color={'purple'}
+            loading={loading}
+            size={150}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
+        ) : (
+          <>
+            <Button variant="link" onClick={() => setCity('')}>
+              현위치
+            </Button>
+            <div className="both">
+              <div className="left">
+                <WeatherBox weather={weather} />
+              </div>
+              <div className="right">
+                <WeatherButton cities={cities} setCity={setCity} city={city} />
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
